@@ -7,11 +7,18 @@ using System.Threading.Tasks;
 using TabloidCLI.Models;
 using TabloidCLI.Repositories;
 
-namespace TabloidCLI
+namespace TabloidCLI.IUserInterfaceJournal
 {
-    public class JournalRepository : DatabaseConnector/*, IJournal<Journal>*/
+    public class JournalRepository : DatabaseConnector, IRepository<Journal>
     {
         public JournalRepository(string connectionString) : base(connectionString) { }
+
+       
+
+        public Journal Get(int id)
+        {
+            throw new NotImplementedException();
+        }
 
         public List<Journal> GetAll()
         {
@@ -43,6 +50,63 @@ namespace TabloidCLI
                     return journals;
 
 
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Journal WHERE id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        public void Insert(Journal journal)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Journal (Title, Content, CreationDate )
+                                                     VALUES (@title, @content, @creationdate)";
+                    cmd.Parameters.AddWithValue("@title", journal.Title);
+                    cmd.Parameters.AddWithValue("@content", journal.Content);
+                    cmd.Parameters.AddWithValue("@creationdate", journal.CreationDate);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Update(Journal journal)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Journal 
+                                           SET Title = @title,
+                                               Content = @content,
+                                               CreationDate = @creationdate
+                                         WHERE id = @id";
+
+                    cmd.Parameters.AddWithValue("@title", journal.Title);
+                    cmd.Parameters.AddWithValue("@content", journal.Content);
+                    cmd.Parameters.AddWithValue("@creationdate", journal.CreationDate);
+                    cmd.Parameters.AddWithValue("@id", journal.Id);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
