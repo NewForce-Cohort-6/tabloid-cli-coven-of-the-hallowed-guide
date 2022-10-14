@@ -39,22 +39,12 @@ namespace TabloidCLI.UserInterfaceManagers
                     List();
                     return this;
                 case "2":
-                    Journal journal = Choose();
-                    if (journal == null)
-                    {
-                        return this;
-                    }
-                    else
-                    {
-                        return new JournalDetailManager(this, _connectionString, journal.Id);
-                    }
-                case "3":
                     Add();
                     return this;
-                case "4":
+                case "3":
                     Edit();
                     return this;
-                case "5":
+                case "4":
                     Remove();
                     return this;
                 case "0":
@@ -148,7 +138,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             Console.Write("New date (blank to leave unchanged: ");
             DateTime date = DateTime.Parse(Console.ReadLine());
-            if (!DateTime.IsNullOrWhiteSpace(date))
+            if (!DateTime.(date))
             {
                 journalToEdit.CreationDate = date;
             }
