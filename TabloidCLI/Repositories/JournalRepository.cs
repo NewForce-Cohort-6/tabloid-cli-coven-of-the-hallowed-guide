@@ -40,7 +40,7 @@ namespace TabloidCLI.IUserInterfaceJournal
                     {
                         Journal journal = new Journal()
                         {
-                            Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                            //Id = reader.GetInt32(reader.GetOrdinal("JournalId")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                             Content = reader.GetString(reader.GetOrdinal("Content")),
