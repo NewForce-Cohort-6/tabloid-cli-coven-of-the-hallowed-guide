@@ -18,17 +18,26 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+                    // Here we setup the command with the SQL we want to execute before we execute it.
                     cmd.CommandText = @"SELECT id, Name FROM Tag";
+
+                    // Execute the SQL in the database and get a "reader" that will give us access to the data.
+                     SqlDataReader reader = cmd.ExecuteReader(); 
+
+                    //List to hold tags we retrieve from DB
                     List<Tag> tags = new List<Tag>();
 
-                    SqlDataReader reader = cmd.ExecuteReader();
+                   // Read() will return true if there's more data to read
                     while (reader.Read())
                     {
+
+                        //Create new tag
                         Tag tag = new Tag()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                         };
+                        //Add tag to list
                         tags.Add(tag);
                     }
 
@@ -46,7 +55,18 @@ namespace TabloidCLI
 
         public void Insert(Tag tag)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Tag (Name)
+                                        VALUES(@Name)";
+                    cmd.Parameters.AddWithValue("@Name", tag.Name);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Update(Tag tag)
