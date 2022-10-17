@@ -111,6 +111,7 @@ namespace TabloidCLI.UserInterfaceManagers
 
             Console.Write("URL: ");
             blog.Url = Console.ReadLine();
+            //DateTime.Now for journal entries?
 
             _blogRepository.Insert(blog);
         }
