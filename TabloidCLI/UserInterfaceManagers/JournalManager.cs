@@ -55,7 +55,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
         }
 
-       
+
 
         private void List()
         {
@@ -110,7 +110,7 @@ namespace TabloidCLI.UserInterfaceManagers
             journal.Content = Console.ReadLine();
 
             Console.Write("Date Created");
-            journal.CreationDate = DateTime.Parse(Console.ReadLine());
+            journal.CreateDateTime = DateTime.Parse(Console.ReadLine());
 
             _journalRepository.Insert(journal);
         }
@@ -136,14 +136,14 @@ namespace TabloidCLI.UserInterfaceManagers
             {
                 journalToEdit.Content = content;
             }
-            Console.Write("New date (blank to leave unchanged: ");
-            DateTime date = DateTime.Parse(Console.ReadLine());
-            if (!DateTime.(date))
-            {
-                journalToEdit.CreationDate = date;
-            }
+            //Console.Write("New date (blank to leave unchanged: ");
+            //DateTime date = DateTime.Parse(Console.ReadLine());
+            //if (!DateTime.(date))
+            //{
+            //    journalToEdit.CreateDateTime = date;
+            //}
 
-            _journalRepository.Update(journalToEdit);
+            //_journalRepository.Update(journalToEdit);
         }
 
         private void Remove()

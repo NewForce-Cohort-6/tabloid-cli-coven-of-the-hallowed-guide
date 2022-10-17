@@ -27,8 +27,9 @@ namespace TabloidCLI.IUserInterfaceJournal
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT  Title,
-                                                CreationDate,
+                    cmd.CommandText = @"SELECT  Id,
+                                                Title,
+                                                CreateDateTime,
                                                 Content
                                         FROM    Journal";
 
@@ -39,8 +40,9 @@ namespace TabloidCLI.IUserInterfaceJournal
                     {
                         Journal journal = new Journal()
                         {
+                            Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
-                            CreationDate = reader.GetDateTime(reader.GetOrdinal("CreationDate")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                             Content = reader.GetString(reader.GetOrdinal("Content")),
                         };
                         journals.Add(journal);
@@ -77,11 +79,11 @@ namespace TabloidCLI.IUserInterfaceJournal
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Journal (Title, Content, CreationDate )
-                                                     VALUES (@title, @content, @creationdate)";
+                    cmd.CommandText = @"INSERT INTO Journal (Title, Content, CreateDateTime )
+                                                     VALUES (@title, @content, @createdatetime)";
                     cmd.Parameters.AddWithValue("@title", journal.Title);
                     cmd.Parameters.AddWithValue("@content", journal.Content);
-                    cmd.Parameters.AddWithValue("@creationdate", journal.CreationDate);
+                    cmd.Parameters.AddWithValue("@createdatetime", journal.CreateDateTime);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -98,12 +100,12 @@ namespace TabloidCLI.IUserInterfaceJournal
                     cmd.CommandText = @"UPDATE Journal 
                                            SET Title = @title,
                                                Content = @content,
-                                               CreationDate = @creationdate
+                                               CreateDateTime = @createdatetime
                                          WHERE id = @id";
 
                     cmd.Parameters.AddWithValue("@title", journal.Title);
                     cmd.Parameters.AddWithValue("@content", journal.Content);
-                    cmd.Parameters.AddWithValue("@creationdate", journal.CreationDate);
+                    cmd.Parameters.AddWithValue("@creationdate", journal.CreateDateTime);
                     cmd.Parameters.AddWithValue("@id", journal.Id);
 
                     cmd.ExecuteNonQuery();
