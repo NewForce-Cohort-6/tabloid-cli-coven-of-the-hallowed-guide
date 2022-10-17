@@ -70,6 +70,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
         }
 
+        //used in Edit and Remove, and to view Blog Detail Menu
         private Blog Choose(string prompt = null)
         {
             if (prompt == null)
@@ -81,6 +82,7 @@ namespace TabloidCLI.UserInterfaceManagers
 
             List<Blog> blogs = _blogRepository.GetAll();
 
+            //display blogs for user to choose from
             for (int i = 0; i < blogs.Count; i++)
             {
                 Blog blog = blogs[i];
@@ -91,6 +93,7 @@ namespace TabloidCLI.UserInterfaceManagers
             string input = Console.ReadLine();
             try
             {
+                //convert user choise to list index
                 int choice = int.Parse(input);
                 return blogs[choice - 1];
             }
