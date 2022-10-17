@@ -13,12 +13,15 @@ namespace TabloidCLI.UserInterfaceManagers
         private readonly IUserInterfaceManager _parentUI;
         private PostRepository _postRepository;
         private AuthorRepository _authorRepository;
+        private BlogRepository _blogRepository;
         private string _connectionString;
 
         public PostManager(IUserInterfaceManager parentUI, string connectionString)
         {
             _parentUI = parentUI;
             _postRepository = new PostRepository(connectionString);
+            _authorRepository = new AuthorRepository(connectionString);
+            _blogRepository = new BlogRepository(connectionString);
             _connectionString = connectionString;
         }
         public IUserInterfaceManager Execute()
@@ -110,14 +113,27 @@ namespace TabloidCLI.UserInterfaceManagers
         private void Add()
         {
             Console.WriteLine("New Post");
+            Post post = new Post();
 
-            Author author = null;
-            while (author == null)
+            Console.WriteLine("Title: ");
+            post.Title = Console.ReadLine();
+
+            Console.WriteLine("URL: ");
+            post.Url = Console.ReadLine();
+
+            while (post.Author == null)
             {
-                author = ChooseAuthor("Please choose an Author for the post:");
+                post.Author = ChooseAuthor("Please choose post's Author: ");
             }
 
+            while (post.Blog == null)
+            {
+                post.Blog = ChooseBlog("Please choose post's Blog: ");
+            }
 
+            post.PublishDateTime = DateTime.Now;
+
+            _postRepository.Insert(post);
         }
 
         private Author ChooseAuthor(string prompt = null)
@@ -165,7 +181,7 @@ namespace TabloidCLI.UserInterfaceManagers
             for (int i =0; i < blogs.Count; i++)
             {
                 Blog blog = blogs[i];
-                Console.WriteLine($" {i + 1}) {Blog.Title}");
+                Console.WriteLine($" {i + 1}) {blog.Title}");
             }
             Console.Write("> ");
 
