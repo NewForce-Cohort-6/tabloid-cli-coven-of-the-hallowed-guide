@@ -13,7 +13,7 @@ namespace TabloidCLI.IUserInterfaceJournal
     {
         public JournalRepository(string connectionString) : base(connectionString) { }
 
-       
+
 
         public Journal Get(int id)
         {
@@ -40,7 +40,7 @@ namespace TabloidCLI.IUserInterfaceJournal
                     {
                         Journal journal = new Journal()
                         {
-                            //Id = reader.GetInt32(reader.GetOrdinal("JournalId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                             Content = reader.GetString(reader.GetOrdinal("Content")),
@@ -105,8 +105,10 @@ namespace TabloidCLI.IUserInterfaceJournal
 
                     cmd.Parameters.AddWithValue("@title", journal.Title);
                     cmd.Parameters.AddWithValue("@content", journal.Content);
-                    cmd.Parameters.AddWithValue("@creationdate", journal.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@createdatetime", DateTime.Now);
                     cmd.Parameters.AddWithValue("@id", journal.Id);
+
+                
 
                     cmd.ExecuteNonQuery();
                 }
@@ -114,6 +116,7 @@ namespace TabloidCLI.IUserInterfaceJournal
         }
     }
 }
+
 
 
  
