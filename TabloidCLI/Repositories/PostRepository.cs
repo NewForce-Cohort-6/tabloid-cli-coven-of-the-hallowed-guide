@@ -125,6 +125,7 @@ namespace TabloidCLI.Repositories
             }
         }
 
+        // Method used in Author Details menu
         public List<Post> GetByAuthor(int authorId)
         {
             using (SqlConnection conn = Connection)
