@@ -56,8 +56,8 @@ namespace TabloidCLI.UserInterfaceManagers
                     Add();
                     return this;
                 case "4":
-                    //Edit();
-                    //return this;
+                    Edit();
+                    return this;
                     throw new NotImplementedException();
                 case "5":
                     Remove();
@@ -135,6 +135,50 @@ namespace TabloidCLI.UserInterfaceManagers
             _postRepository.Insert(post);
         }
 
+        private void Edit()
+        {
+            Post post = Choose("Which post would you like to edit?");
+            if (post == null)
+            {
+                return;
+            }
+
+            Console.Write("\nNew title (blank to leave unchanged): ");
+            string newTitle = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newTitle))
+            {
+                post.Title = newTitle;
+            }
+
+            Console.Write("\nNew URL (blank to leave unchanged): ");
+            string newUrl = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(newUrl))
+            {
+                post.Url = newUrl;
+            }
+
+            Console.Write("\nNew publication date now (Enter 'NOW' to change, blank to leave unchanged): ");
+            string isNewDateTime = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(isNewDateTime))
+            {
+                post.PublishDateTime = DateTime.Now;
+            }
+
+            Author newAuthor = ChooseAuthor("New author (blank to leave unchanged): ");
+            if(newAuthor != null)
+            {
+                post.Author = newAuthor;
+            }
+
+            Blog newBlog = ChooseBlog("New blog (blank to leave unchaged): ");
+            if (newBlog != null)
+            {
+                post.Blog = newBlog;
+            }
+
+            _postRepository.Update(post);
+        }
+
         private void Remove()
         {
             Post post = Choose("Which post would you like to remove?");
@@ -171,7 +215,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Selection");
+                //Console.WriteLine("Invalid Selection");
                 return null;
             }
         }
@@ -202,7 +246,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Selection");
+                //Console.WriteLine("Invalid Selection");
                 return null;
             }
         }
