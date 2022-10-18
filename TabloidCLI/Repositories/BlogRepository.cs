@@ -49,16 +49,16 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT a.Id AS AuthorId,
-                                               a.FirstName,
-                                               a.LastName,
-                                               a.Bio,
+                    cmd.CommandText = @"SELECT b.Id AS BlogId,
+                                               b.Title,
+                                               b.URL,
                                                t.Id AS TagId,
                                                t.Name
-                                          FROM Blog b 
-                                               LEFT JOIN AuthorTag at on a.Id = at.AuthorId
-                                               LEFT JOIN Tag t on t.Id = at.TagId
-                                         WHERE a.id = @id";
+                                          FROM Blog b
+                                               LEFT JOIN BlogTag bt on b.Id = bt.BlogId
+                                               LEFT JOIN Tag t on t.Id = bt.TagId
+                                         WHERE b.id = @id";
+
 
                     cmd.Parameters.AddWithValue("@id", id);
 
@@ -71,9 +71,9 @@ namespace TabloidCLI
                         {
                             blog = new Blog()
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                                Title = reader.GetString(reader.GetOrdinal("FirstName")),
-                                Url = reader.GetString(reader.GetOrdinal("LastName"))
+                                Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
+                                Title = reader.GetString(reader.GetOrdinal("Title")),
+                                Url = reader.GetString(reader.GetOrdinal("URL"))
                             };
                         }
 
