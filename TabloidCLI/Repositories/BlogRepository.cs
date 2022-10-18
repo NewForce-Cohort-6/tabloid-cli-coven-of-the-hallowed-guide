@@ -42,6 +42,8 @@ namespace TabloidCLI
                 }
             }
         }
+
+        //used in BlogDetailManager to select a Blog
         public Blog Get(int id)
         {
             using (SqlConnection conn = Connection)
