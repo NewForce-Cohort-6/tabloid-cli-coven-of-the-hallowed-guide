@@ -123,6 +123,8 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+
+                    //     INCLUDE LEFT JOIN ?? FOR AUTHOR TAG?
                     cmd.CommandText = @"UPDATE Author 
                                            SET FirstName = @firstName,
                                                LastName = @lastName,
