@@ -101,10 +101,10 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Author (FirstName, LastName, Bio )
-                                                     VALUES (@firstName, @lastName, @bio)";
-                    cmd.Parameters.AddWithValue("@firstName", blog.Title);
-                    cmd.Parameters.AddWithValue("@lastName", blog.Url);
+                    cmd.CommandText = @"INSERT INTO Blog (Title, URL)
+                                                     VALUES (@title, @url)";
+                    cmd.Parameters.AddWithValue("@title", blog.Title);
+                    cmd.Parameters.AddWithValue("@url", blog.Url);
 
                     cmd.ExecuteNonQuery();
                 }
