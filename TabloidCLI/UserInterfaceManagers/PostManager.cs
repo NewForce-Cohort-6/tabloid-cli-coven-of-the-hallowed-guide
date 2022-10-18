@@ -206,7 +206,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Selection");
+                //Console.WriteLine("Invalid Selection");
                 return null;
             }
         }
@@ -237,7 +237,7 @@ namespace TabloidCLI.UserInterfaceManagers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Selection");
+                //Console.WriteLine("Invalid Selection");
                 return null;
             }
         }
