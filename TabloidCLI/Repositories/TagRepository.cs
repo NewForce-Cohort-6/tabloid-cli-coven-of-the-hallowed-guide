@@ -18,17 +18,26 @@ namespace TabloidCLI
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+                    // Here we setup the command with the SQL we want to execute before we execute it.
                     cmd.CommandText = @"SELECT id, Name FROM Tag";
+
+                    // Execute the SQL in the database and get a "reader" that will give us access to the data.
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    //List to hold tags we retrieve from DB
                     List<Tag> tags = new List<Tag>();
 
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    // Read() will return true if there's more data to read
                     while (reader.Read())
                     {
+
+                        //Create new tag
                         Tag tag = new Tag()
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                         };
+                        //Add tag to list
                         tags.Add(tag);
                     }
 
@@ -46,17 +55,89 @@ namespace TabloidCLI
 
         public void Insert(Tag tag)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Tag (Name)
+                                        VALUES(@Name)";
+                    cmd.Parameters.AddWithValue("@Name", tag.Name);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Update(Tag tag)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Tag
+                                           SET Name = @name
+                                         WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@name", tag.Name);
+                    cmd.Parameters.AddWithValue("@id", tag.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Tag 
+                                         WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public SearchResults<Blog> SearchBlogs(string tagName)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT b.id,
+                                               b.Title,
+                                               b.Url
+                                          FROM Blog b
+                                               LEFT JOIN BlogTag bt on b.Id = bt.BlogId
+                                               LEFT JOIN Tag t on t.Id = bt.TagId
+                                         WHERE t.Name LIKE @name";
+                    cmd.Parameters.AddWithValue("@name", $"%{tagName}%");
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    SearchResults<Blog> results = new SearchResults<Blog>();
+                    while (reader.Read())
+                    {
+                        Blog blog = new Blog()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Url = reader.GetString(reader.GetOrdinal("Url")),
+                        };
+                        results.Add(blog);
+                    }
+
+                    reader.Close();
+
+                    return results;
+                }
+            }
         }
 
         public SearchResults<Author> SearchAuthors(string tagName)
@@ -93,6 +174,49 @@ namespace TabloidCLI
                     reader.Close();
 
                     return results;
+                }
+            }
+        }
+
+        // SearchPosts returns a Post objects without Author and Blog object properties as they are not used in search results.
+        public SearchResults<Post> SearchPosts(string tagName)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.id,
+                                               p.Title As PostTitle,
+                                               p.URL AS PostUrl,
+                                               p.PublishDateTime,
+                                               p.AuthorId,
+                                               p.BlogId,
+                                               t.Id as TagId,
+                                               t.Name
+                                          FROM Post p 
+                                               LEFT JOIN PostTag pt ON p.Id = pt.PostId
+                                               LEFT JOIN Tag t ON t.Id = pt.TagId
+                                          WHERE t.Name LIKE @name";
+                    cmd.Parameters.AddWithValue("@name", $"%{tagName}%");
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    SearchResults<Post> results = new SearchResults<Post>();
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("PostTitle")),
+                            Url = reader.GetString(reader.GetOrdinal("PostUrl")),
+                        };
+                        results.Add(post);
+                    }
+
+                    reader.Close();
+
+                    return results;
+
                 }
             }
         }
