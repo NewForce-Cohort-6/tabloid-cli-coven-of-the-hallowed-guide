@@ -73,7 +73,7 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"@""SELECT p.id,
+                    cmd.CommandText = @"SELECT p.id,
                                                p.Title As PostTitle,
                                                p.URL AS PostUrl,
                                                p.PublishDateTime,
