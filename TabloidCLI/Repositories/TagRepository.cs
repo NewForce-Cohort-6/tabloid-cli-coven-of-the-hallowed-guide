@@ -178,6 +178,7 @@ namespace TabloidCLI
             }
         }
 
+        // SearchPosts returns a Post objects without Author and Blog object properties as they are not used in search results.
         public SearchResults<Post> SearchPosts(string tagName)
         {
             using (SqlConnection conn = Connection)
@@ -208,20 +209,6 @@ namespace TabloidCLI
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("PostTitle")),
                             Url = reader.GetString(reader.GetOrdinal("PostUrl")),
-                            //PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-                            //Author = new Author()
-                            //{
-                            //    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                            //    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                            //    LastName = reader.GetString(reader.GetOrdinal("LastName")),
-                            //    Bio = reader.GetString(reader.GetOrdinal("Bio")),
-                            //},
-                            //Blog = new Blog()
-                            //{
-                            //    Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
-                            //    Title = reader.GetString(reader.GetOrdinal("BlogTitle")),
-                            //    Url = reader.GetString(reader.GetOrdinal("BlogUrl")),
-                            //}
                         };
                         results.Add(post);
                     }
