@@ -22,12 +22,12 @@ namespace TabloidCLI
                     cmd.CommandText = @"SELECT id, Name FROM Tag";
 
                     // Execute the SQL in the database and get a "reader" that will give us access to the data.
-                     SqlDataReader reader = cmd.ExecuteReader(); 
+                    SqlDataReader reader = cmd.ExecuteReader();
 
                     //List to hold tags we retrieve from DB
                     List<Tag> tags = new List<Tag>();
 
-                   // Read() will return true if there's more data to read
+                    // Read() will return true if there's more data to read
                     while (reader.Read())
                     {
 
@@ -72,7 +72,7 @@ namespace TabloidCLI
         public void Update(Tag tag)
         {
             using (SqlConnection conn = Connection)
-            { 
+            {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
@@ -174,6 +174,62 @@ namespace TabloidCLI
                     reader.Close();
 
                     return results;
+                }
+            }
+        }
+
+        public SearchResults<Post> SearchPosts(string tagName)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.id,
+                                               p.Title As PostTitle,
+                                               p.URL AS PostUrl,
+                                               p.PublishDateTime,
+                                               p.AuthorId,
+                                               p.BlogId,
+                                               t.Id as TagId,
+                                               t.Name
+                                          FROM Post p 
+                                               LEFT JOIN PostTag pt ON p.Id = pt.PostId
+                                               LEFT JOIN Tag t ON t.Id = pt.TagId
+                                          WHERE t.Name LIKE @name";
+                    cmd.Parameters.AddWithValue("@name", $"%{tagName}%");
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    SearchResults<Post> results = new SearchResults<Post>();
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("PostTitle")),
+                            Url = reader.GetString(reader.GetOrdinal("PostUrl")),
+                            //PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                            //Author = new Author()
+                            //{
+                            //    Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                            //    FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            //    LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            //    Bio = reader.GetString(reader.GetOrdinal("Bio")),
+                            //},
+                            //Blog = new Blog()
+                            //{
+                            //    Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
+                            //    Title = reader.GetString(reader.GetOrdinal("BlogTitle")),
+                            //    Url = reader.GetString(reader.GetOrdinal("BlogUrl")),
+                            //}
+                        };
+                        results.Add(post);
+                    }
+
+                    reader.Close();
+
+                    return results;
+
                 }
             }
         }
